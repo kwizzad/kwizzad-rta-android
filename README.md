@@ -23,9 +23,9 @@ Add it in the app's project-level `build.gradle` file:
 allprojects {
 	repositories {
 		...
-        maven {
-            url "https://tvs-public.s3-eu-west-1.amazonaws.com/android-releases/rta/"
-        }
+		maven {
+		    url "https://tvs-public.s3-eu-west-1.amazonaws.com/android-releases/rta/"
+		}
 	}
 }
 
