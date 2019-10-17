@@ -23,23 +23,12 @@ Add it in the app's project-level `build.gradle` file:
 allprojects {
 	repositories {
 		...
-		maven {
-			url "s3://tvs-private/android-releases/rta/"
-			credentials(AwsCredentials) {
-				accessKey AWS_ACCESS_KEY
-				secretKey AWS_SECRET_KEY
-			}
-		}
+        maven {
+            url "https://tvs-public.s3-eu-west-1.amazonaws.com/android-releases/rta/"
+        }
 	}
 }
 
-```
-
-Add ```AWS_ACCESS_KEY``` and ```AWS_SECRET_KEY``` values to gradle.properties file:
-
-```
-AWS_ACCESS_KEY=AKIAUT3PTKBITDFR5DF3
-AWS_SECRET_KEY=r080isPxpoHqRny6QXl0A0Kt3KUbQVc1UXTP2Crb
 ```
 
 __Step 2__. Add the dependency
@@ -50,7 +39,7 @@ Open the app-level `build.gradle` file for your app, and look for a "dependencie
 ```gradle
 dependencies {
 	...
-	implementation 'com.kwizzad.android:rta:0.2.1'
+	implementation 'com.kwizzad.android:rta:0.2.3'
 	...
 }
 ```
