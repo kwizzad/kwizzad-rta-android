@@ -21,7 +21,7 @@ allprojects {
         jcenter()
 
         maven {
-            url "https://tvs-private.s3-eu-west-1.amazonaws.com/android-releases/rta/"
+            url "https://tvs-public.s3-eu-west-1.amazonaws.com/android-releases/rta/"
         }
     }
 }
