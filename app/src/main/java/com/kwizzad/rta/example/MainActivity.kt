@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 log(error)
             }
         })
-        rta.load(this, "rewa")
+        rta.load(this, "interstitials")
     }
 
     private fun setAdAvailable(available: Boolean) {
