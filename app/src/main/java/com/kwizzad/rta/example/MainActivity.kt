@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import com.kwizzad.adsbase.AdOpportunity
+import com.kwizzad.rta.AdCallback
 import com.kwizzad.rta.KwizzadRta
-import com.kwizzad.rta.PreloadCallback
-import com.kwizzad.rta.ShowCallback
+import com.kwizzad.rta.cmp.CmpDialog
+import com.kwizzad.rta.debug.KwizzadDebugActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var btnShow : Button
+    private lateinit var btnShowAd : Button
+    private lateinit var btnDebug: Button
+    private lateinit var btnCmpDialog: Button
     private lateinit var tvLog: TextView
 
     private lateinit var rta: KwizzadRta
@@ -20,31 +23,69 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         initLayout()
         initRta()
+        initDebug()
+        initCmp()
         loadRta()
+    }
+
+    private fun logConsentUpdated() {
+        log("Consent is updated")
+    }
+
+    private fun initCmp() {
+        btnCmpDialog.setOnClickListener {
+            CmpDialog.show(supportFragmentManager) {
+                runOnUiThread {
+                    logConsentUpdated()
+                }
+            }
+        }
+    }
+
+    private fun initDebug() {
+        btnDebug.setOnClickListener {
+            KwizzadDebugActivity.show(this, rta) {
+                log("Ad result from debug page: $it")
+            }
+        }
     }
 
     private fun initLayout() {
         setContentView(R.layout.activity_main)
-        btnShow = findViewById(R.id.btn_show_ad)
+        btnShowAd = findViewById(R.id.btn_show_ad)
+        btnCmpDialog = findViewById(R.id.btn_show_cmp)
+        btnDebug = findViewById(R.id.btn_show_debug)
         tvLog = findViewById(R.id.log)
     }
 
     private fun initRta() {
-        rta = KwizzadRta.create(this, "com.kwizzad.rta.example/rta_android")
+        rta = KwizzadRta.create(this, "rta_android")
         rta.identifyUser("com.kwizzad.rta.example:3452462")
         rta.onCreate(this)
-        btnShow.setOnClickListener {
+        btnShowAd.setOnClickListener {
             showRta()
         }
     }
 
     private fun showRta() {
-        rta.showAd(this, object : ShowCallback {
+        rta.showAd(this)
+    }
+
+    private fun loadRta() {
+        rta.addAdCallback(object: AdCallback {
+            override fun onAdAvailable(available: Boolean) {
+                setAdAvailable(available)
+            }
+
+            override fun onAdFailedToLoad(error: Throwable) {
+                log("onAdFailedToLoad : ${error.message ?: error.localizedMessage}")
+            }
+
             override fun onAdCancelled(adOpportunity: AdOpportunity) {
                 log("onAdCancelled : $adOpportunity")
             }
 
-            override fun onAdError(error: Throwable) {
+            override fun onAdError(adOpportunity: AdOpportunity?, error: Throwable) {
                 log("onAdError : ${error.message ?: error.localizedMessage}")
             }
 
@@ -56,31 +97,18 @@ class MainActivity : AppCompatActivity() {
                 log("onAdOpened : $adOpportunity")
             }
         })
-    }
-
-
-    private fun loadRta() {
-        rta.setPreloadedCallback(object: PreloadCallback {
-            override fun onAdAvailable(available: Boolean) {
-                setAdAvailable(available)
-            }
-
-            override fun onAdFailedToLoad(error: Throwable) {
-                log(error)
-            }
-        })
         rta.load(this, "interstitials")
     }
 
     private fun setAdAvailable(available: Boolean) {
         val logText : String
-        btnShow.isEnabled = available
+        btnShowAd.isEnabled = available
         if (available) {
             logText = "Ad is loaded"
-            btnShow.text = "SHOW RTA"
+            btnShowAd.text = "SHOW RTA"
         } else {
             logText = "Loading ads..."
-            btnShow.text = "LOADING RTA..."
+            btnShowAd.text = "LOADING RTA..."
         }
         log(logText)
     }
