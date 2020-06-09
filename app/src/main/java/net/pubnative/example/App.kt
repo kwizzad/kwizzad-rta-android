@@ -1,11 +1,11 @@
-package com.kwizzad.rta.example
+package net.pubnative.example
 
 import android.app.Application
-import com.kwizzad.rta.KwizzadRta
+import net.pubnative.hybidx.HyBidX
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        KwizzadRta.initialize(this)
+        HyBidX.initialize(this)
     }
 }

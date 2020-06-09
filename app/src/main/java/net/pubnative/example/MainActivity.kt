@@ -1,14 +1,14 @@
-package com.kwizzad.rta.example
+package net.pubnative.example
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import com.kwizzad.adsbase.AdOpportunity
-import com.kwizzad.rta.AdCallback
-import com.kwizzad.rta.KwizzadRta
-import com.kwizzad.rta.cmp.CmpDialog
-import com.kwizzad.rta.debug.KwizzadDebugActivity
+import net.pubnative.adsbase.AdOpportunity
+import net.pubnative.hybidx.AdCallback
+import net.pubnative.hybidx.HyBidX
+import net.pubnative.hybidx.cmp.CmpDialog
+import net.pubnative.hybidx.debug.HyBidXDebugActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,15 +17,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnCmpDialog: Button
     private lateinit var tvLog: TextView
 
-    private lateinit var rta: KwizzadRta
+    private lateinit var hyBidX: HyBidX
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initLayout()
-        initRta()
+        initHyBidX()
         initDebug()
         initCmp()
-        loadRta()
+        loadHyBidX()
     }
 
     private fun logConsentUpdated() {
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCmp() {
         btnCmpDialog.setOnClickListener {
-            CmpDialog.show(supportFragmentManager) {
+            CmpDialog.show(this, supportFragmentManager) {
                 runOnUiThread {
                     logConsentUpdated()
                 }
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initDebug() {
         btnDebug.setOnClickListener {
-            KwizzadDebugActivity.show(this, rta) {
+            HyBidXDebugActivity.show(this, hyBidX) {
                 log("Ad result from debug page: $it")
             }
         }
@@ -58,21 +58,21 @@ class MainActivity : AppCompatActivity() {
         tvLog = findViewById(R.id.log)
     }
 
-    private fun initRta() {
-        rta = KwizzadRta.create(this, "rta_android")
-        rta.identifyUser("com.kwizzad.rta.example:3452462")
-        rta.onCreate(this)
+    private fun initHyBidX() {
+        hyBidX = HyBidX.create(this, "rta_android")
+        hyBidX.identifyUser("net.pubnative.example:3452462")
+        hyBidX.onCreate(this)
         btnShowAd.setOnClickListener {
-            showRta()
+            showHyBidX()
         }
     }
 
-    private fun showRta() {
-        rta.showAd(this)
+    private fun showHyBidX() {
+        hyBidX.showAd(this)
     }
 
-    private fun loadRta() {
-        rta.addAdCallback(object: AdCallback {
+    private fun loadHyBidX() {
+        hyBidX.addAdCallback(object: AdCallback {
             override fun onAdAvailable(available: Boolean) {
                 setAdAvailable(available)
             }
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                 log("onAdOpened : $adOpportunity")
             }
         })
-        rta.load(this, "interstitials")
+        hyBidX.load(this, "interstitials")
     }
 
     private fun setAdAvailable(available: Boolean) {
@@ -105,10 +105,10 @@ class MainActivity : AppCompatActivity() {
         btnShowAd.isEnabled = available
         if (available) {
             logText = "Ad is loaded"
-            btnShowAd.text = "SHOW RTA"
+            btnShowAd.text = "SHOW HyBidX"
         } else {
             logText = "Loading ads..."
-            btnShowAd.text = "LOADING RTA..."
+            btnShowAd.text = "LOADING HyBidX..."
         }
         log(logText)
     }
@@ -124,26 +124,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        rta.onStart(this)
+        hyBidX.onStart(this)
     }
 
     override fun onResume() {
         super.onResume()
-        rta.onResume(this)
+        hyBidX.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
-        rta.onPause(this)
+        hyBidX.onPause(this)
     }
 
     override fun onStop() {
         super.onStop()
-        rta.onStop(this)
+        hyBidX.onStop(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        rta.onDestroy(this)
+        hyBidX.onDestroy(this)
     }
 }

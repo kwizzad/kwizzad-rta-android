@@ -1,11 +1,11 @@
 # Get Started
-This guide is for publishers who want to monetize an Android app with Kwizzad RTA.
+This guide is for publishers who want to monetize an Android app with HyBidX SDK.
 
-Integrating the Kwizzad RTA SDK into an app is the first step toward displaying ads and earning revenue.   
+Integrating the HyBidX SDK into an app is the first step toward displaying ads and earning revenue.
 
 ## Prerequisites
 
-- Use Android Studio 3.2 or later
+- Use Android Studio 3.5 or later
 
 - `minSdkVersion` 16 or later
 
@@ -19,16 +19,12 @@ Add it in the app's project-level `build.gradle` file:
 
 
 ```gradle
-
 allprojects {
 	repositories {
 		...
-		maven {
-		    url "https://tvs-public.s3-eu-west-1.amazonaws.com/android-releases/rta/"
-		}
+		maven { url 'https://dl.bintray.com/pubnative/maven' }
 	}
 }
-
 ```
 
 __Step 2__. Add the dependency
@@ -39,7 +35,7 @@ Open the app-level `build.gradle` file for your app, and look for a "dependencie
 ```gradle
 dependencies {
 	...
-	implementation 'com.kwizzad.android:rta:0.2.3'
+	implementation 'net.pubnative.android:hybidx:0.7.5-develop.252'
 	...
 }
 ```
@@ -60,37 +56,37 @@ __Step3__. Add the following permission to your _AndroidManifest.xml_  file insi
 
 ### Initialize
 
-Before loading and showing ads, initialize the library by calling  `KwizzadRta.initialize(application)` .  This needs to be done only once at app launch (ideally in `Application.onCreate()` method).
+Before loading and showing ads, initialize the library by calling  `HyBidX.initialize(application)` .  This needs to be done only once at app launch (ideally in `Application.onCreate()` method).
 
 ```
 class App: Application() {
 	override fun onCreate() {
 		super.onCreate()
-		KwizzadRta.initialize(this)
+		HyBidX.initialize(this)
 	}
 }
 ```
 
-Create rta object in your activity:
+Create hyBidX object in your activity:
 ```
-var rta = KwizzadRta.create(activity, API_TOKEN)
+var hyBidX = HyBidX.create(activity, API_TOKEN)
 ```
 
 After this, add lifecycle methods:
 ```
-rta.onCreate(activity)
+hyBidX.onCreate(activity)
 
-rta.onStart(activity)
+hyBidX.onStart(activity)
 
-rta.onResume(activity)
+hyBidX.onResume(activity)
 
-rta.onPause(activity)
+hyBidX.onPause(activity)
 
-rta.onStop(activity)
+hyBidX.onStop(activity)
 
-rta.onDestroy(activity)
+hyBidX.onDestroy(activity)
 ```
-to your activity lifecycle methods, and do it in every activity where you use ```rta``` object
+to your activity lifecycle methods, and do it in every activity where you use ```hyBidX``` object
 
 
 
@@ -109,14 +105,14 @@ val preloadCallback = object : PreloadCallback {
 }
 ```
 
-and set it to ```rta``` object:
+and set it to ```hyBidX``` object:
 ```
-rta.setPreloadedCallback(preloadCallback)
+hyBidX.setPreloadedCallback(preloadCallback)
 ```
 
 then call ```load``` to start preloading:
 ```
-rta.load(activity, placement)
+hyBidX.load(activity, placement)
 ```
 
 As soon as an ad is preloaded ```onAdAvailable``` will be called with param ```available``` equals to true. After this you can show and ad.
@@ -150,14 +146,10 @@ val showCallback = object : ShowCallback {
 then call ```show``` function:
 
 ```
-rta.showAd(this, showCallback)
+hyBidX.showAd(this, showCallback)
 ```
 
-
-
 You don't have to reload ads, it is done automatically. As soon as another ad is preloaded, you will receive  ```onAdAvailable``` callback with param ```available``` equals to true
-
-
 
 ## Add providers
 VAST/VPAID is supported by default without any additional todo on your side.
